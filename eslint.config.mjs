@@ -1,18 +1,40 @@
-import { defineConfig, globalIgnores } from "eslint/config";
-import nextVitals from "eslint-config-next/core-web-vitals";
-import nextTs from "eslint-config-next/typescript";
+import { defineConfig } from 'eslint/config'
+import nextPlugin from '@next/eslint-plugin-next'
+import eslintNextConfig from '@rocketseat/eslint-config/next.js'
+import { FlatCompat } from '@eslint/eslintrc'
+import { fileURLToPath } from 'node:url'
+import path from 'node:path'
+
+// Obter o caminho do diretório do pacote Rocketseat para resolver dependências legadas e aninhadas
+const rocketseatDir = path.dirname(
+  fileURLToPath(import.meta.resolve('@rocketseat/eslint-config/package.json')),
+)
+
+const compat = new FlatCompat({
+  baseDirectory: rocketseatDir,
+  resolvePluginsRelativeTo: rocketseatDir,
+})
 
 const eslintConfig = defineConfig([
-  ...nextVitals,
-  ...nextTs,
-  // Override default ignores of eslint-config-next.
-  globalIgnores([
-    // Default ignores of eslint-config-next:
-    ".next/**",
-    "out/**",
-    "build/**",
-    "next-env.d.ts",
-  ]),
-]);
+  // Aplica as configurações da Rocketseat traduzidas para o formato Flat Config
+  ...compat.config(eslintNextConfig),
 
-export default eslintConfig;
+  // Aplica as configurações do Next.js (Core Web Vitals)
+  {
+    plugins: {
+      '@next/next': nextPlugin,
+    },
+    rules: {
+      ...nextPlugin.configs.recommended.rules,
+      ...nextPlugin.configs['core-web-vitals'].rules,
+      '@typescript-eslint/no-explicit-any': ['error'],
+    },
+  },
+
+  // Você pode adicionar suas regras customizadas ou ignorar pastas aqui
+  {
+    ignores: ['node_modules/', '.next/', 'dist/'],
+  },
+])
+
+export default eslintConfig
