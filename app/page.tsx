@@ -47,10 +47,10 @@ export default function Home() {
             onClick={handleReset}
             type="button"
           >
-            <span className="h-8 w-8 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white font-black text-lg">
+            <span className="h-8 w-8 rounded-xl bg-linear-to-br from-primary to-secondary flex items-center justify-center text-white font-black text-lg">
               D
             </span>
-            <span className="font-black text-xl tracking-tight bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+            <span className="font-black text-xl tracking-tight bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent">
               diet.already
             </span>
           </button>

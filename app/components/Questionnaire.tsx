@@ -1,11 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { SubmitEvent, useState } from 'react'
 import { QuestionnaireData, DietPlan } from '../types'
 import { generateDiet } from '../actions/generate-diet'
 
 interface QuestionnaireProps {
-  onSuccess: (diet: DietPlan, questionnaire: QuestionnaireData) => void
+  readonly onSuccess: (diet: DietPlan, questionnaire: QuestionnaireData) => void
 }
 
 export function Questionnaire({ onSuccess }: QuestionnaireProps) {
@@ -105,7 +105,7 @@ export function Questionnaire({ onSuccess }: QuestionnaireProps) {
     setStep((prev) => Math.max(prev - 1, 1))
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (!validateStep()) return
 
@@ -123,7 +123,7 @@ export function Questionnaire({ onSuccess }: QuestionnaireProps) {
     try {
       const generated = await generateDiet(formData)
       onSuccess(generated, formData)
-    } catch (err) {
+    } catch {
       alert('Ocorreu um erro ao gerar a dieta. Tente novamente mais tarde.')
     } finally {
       clearTimeout(timer1)
@@ -166,7 +166,7 @@ export function Questionnaire({ onSuccess }: QuestionnaireProps) {
               </div>
               <div className="w-full bg-slate-100 dark:bg-border-dark h-2 rounded-full overflow-hidden">
                 <div
-                  className="bg-gradient-to-r from-primary to-secondary h-full rounded-full transition-all duration-500 ease-out"
+                  className="bg-linear-to-r from-primary to-secondary h-full rounded-full transition-all duration-500 ease-out"
                   style={{ width: `${progressPercentage}%` }}
                 />
               </div>
@@ -184,12 +184,16 @@ export function Questionnaire({ onSuccess }: QuestionnaireProps) {
                   </p>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-slate-800 dark:text-slate-200">
+                  <label
+                    htmlFor="name"
+                    className="text-sm font-bold text-slate-800 dark:text-slate-200"
+                  >
                     Seu nome
                   </label>
                   <input
                     type="text"
                     name="name"
+                    id="name"
                     value={formData.name}
                     onChange={handleTextChange}
                     placeholder="Ex: João"
@@ -202,12 +206,16 @@ export function Questionnaire({ onSuccess }: QuestionnaireProps) {
                   )}
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-slate-800 dark:text-slate-200">
+                  <label
+                    htmlFor="male"
+                    className="text-sm font-bold text-slate-800 dark:text-slate-200"
+                  >
                     Seu Gênero
                   </label>
                   <div className="grid grid-cols-2 gap-4">
                     <button
                       type="button"
+                      id="male"
                       onClick={() => selectGender('male')}
                       className={`py-4 rounded-xl border font-bold text-sm transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer ${
                         formData.gender === 'male'
@@ -308,12 +316,16 @@ export function Questionnaire({ onSuccess }: QuestionnaireProps) {
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-slate-800 dark:text-slate-200">
+                    <label
+                      htmlFor="age"
+                      className="text-sm font-bold text-slate-800 dark:text-slate-200"
+                    >
                       Idade (anos)
                     </label>
                     <input
                       type="number"
                       name="age"
+                      id="age"
                       value={formData.age || ''}
                       onChange={handleNumberChange}
                       min="1"
@@ -327,12 +339,16 @@ export function Questionnaire({ onSuccess }: QuestionnaireProps) {
                     )}
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-slate-800 dark:text-slate-200">
+                    <label
+                      htmlFor="weight"
+                      className="text-sm font-bold text-slate-800 dark:text-slate-200"
+                    >
                       Peso (kg)
                     </label>
                     <input
                       type="number"
                       name="weight"
+                      id="weight"
                       value={formData.weight || ''}
                       onChange={handleNumberChange}
                       min="20"
@@ -346,12 +362,16 @@ export function Questionnaire({ onSuccess }: QuestionnaireProps) {
                     )}
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-slate-800 dark:text-slate-200">
+                    <label
+                      htmlFor="height"
+                      className="text-sm font-bold text-slate-800 dark:text-slate-200"
+                    >
                       Altura (cm)
                     </label>
                     <input
                       type="number"
                       name="height"
+                      id="height"
                       value={formData.height || ''}
                       onChange={handleNumberChange}
                       min="50"
@@ -529,7 +549,7 @@ export function Questionnaire({ onSuccess }: QuestionnaireProps) {
               ) : (
                 <button
                   type="submit"
-                  className="px-8 py-3 bg-gradient-to-r from-primary to-secondary text-white font-bold rounded-xl shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 cursor-pointer"
+                  className="px-8 py-3 bg-linear-to-r from-primary to-secondary text-white font-bold rounded-xl shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 cursor-pointer"
                 >
                   Gerar Dieta por IA
                 </button>

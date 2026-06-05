@@ -20,22 +20,14 @@ export function calculateDietMetrics(data: QuestionnaireData): DietMetrics {
     tmb = 10 * weight + 6.25 * height - 5 * age - 161
   }
 
-  // Physical Activity Level Multiplier
-  let activityMultiplier = 1.2
-  switch (activityLevel) {
-    case 'sedentary':
-      activityMultiplier = 1.2
-      break
-    case 'lightly_active':
-      activityMultiplier = 1.375
-      break
-    case 'moderately_active':
-      activityMultiplier = 1.55
-      break
-    case 'very_active':
-      activityMultiplier = 1.725
-      break
-  }
+  const activityMultipliers = {
+    sedentary: 1.2,
+    lightly_active: 1.375,
+    moderately_active: 1.55,
+    very_active: 1.725,
+  } as const
+
+  const activityMultiplier = activityMultipliers[activityLevel]
 
   const nct = tmb * activityMultiplier
 

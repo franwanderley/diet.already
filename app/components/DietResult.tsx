@@ -3,14 +3,20 @@
 import { DietPlan, QuestionnaireData } from '../types'
 
 interface DietResultProps {
-  diet: DietPlan
-  questionnaire: QuestionnaireData
-  onReset: () => void
+  readonly diet: DietPlan
+  readonly questionnaire: QuestionnaireData
+  readonly onReset: () => void
+}
+
+const GOAL_MAPPED_NAME = {
+  lose: 'Emagrecimento',
+  gain: 'Hipertrofia',
+  maintain: 'Manutenção',
 }
 
 export function DietResult({ diet, questionnaire, onReset }: DietResultProps) {
   const handlePrint = () => {
-    window.print()
+    globalThis.print()
   }
 
   const dailyHydration = Math.round(questionnaire.weight * 35)
@@ -35,7 +41,7 @@ export function DietResult({ diet, questionnaire, onReset }: DietResultProps) {
           </button>
           <button
             onClick={handlePrint}
-            className="flex-1 sm:flex-initial px-6 py-3 bg-gradient-to-r from-primary to-secondary text-white font-bold rounded-xl shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 cursor-pointer flex items-center justify-center gap-2"
+            className="flex-1 sm:flex-initial px-6 py-3 bg-linear-to-r from-primary to-secondary text-white font-bold rounded-xl shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 cursor-pointer flex items-center justify-center gap-2"
           >
             <svg
               className="h-5 w-5"
@@ -86,12 +92,7 @@ export function DietResult({ diet, questionnaire, onReset }: DietResultProps) {
               {questionnaire.gender === 'male' ? 'Masculino' : 'Feminino'}
             </div>
             <div>
-              <strong>Objetivo:</strong>{' '}
-              {questionnaire.goal === 'lose'
-                ? 'Emagrecimento'
-                : questionnaire.goal === 'gain'
-                  ? 'Hipertrofia'
-                  : 'Manutenção'}
+              <strong>Objetivo:</strong> {GOAL_MAPPED_NAME[questionnaire.goal]}
             </div>
           </div>
         </div>
@@ -100,8 +101,8 @@ export function DietResult({ diet, questionnaire, onReset }: DietResultProps) {
         {(diet.tmb || diet.nct) && (
           <div className="bg-slate-50/50 dark:bg-slate-950/20 p-6 rounded-3xl border border-slate-100 dark:border-border-dark/60 space-y-4">
             <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-              <span className="h-5 w-1 bg-gradient-to-b from-primary to-secondary rounded-full" />
-              Métricas Energéticas
+              <span className="h-5 w-1 bg-linear-to-b from-primary to-secondary rounded-full" />
+              <span>Métricas Energéticas</span>
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div className="bg-white dark:bg-card-dark p-5 rounded-2xl border border-slate-100 dark:border-border-dark text-center">
@@ -126,15 +127,9 @@ export function DietResult({ diet, questionnaire, onReset }: DietResultProps) {
                   Energia gasta incluindo atividade física
                 </div>
               </div>
-              <div className="bg-gradient-to-br from-primary/5 to-secondary/5 dark:from-primary/10 dark:to-secondary/10 p-5 rounded-2xl border border-primary/20 dark:border-secondary/20 text-center">
+              <div className="bg-linear-to-br from-primary/5 to-secondary/5 dark:from-primary/10 dark:to-secondary/10 p-5 rounded-2xl border border-primary/20 dark:border-secondary/20 text-center">
                 <div className="text-xs text-primary dark:text-secondary font-bold uppercase tracking-wider">
-                  Meta da Dieta (
-                  {questionnaire.goal === 'lose'
-                    ? 'Emagrecimento'
-                    : questionnaire.goal === 'gain'
-                      ? 'Hipertrofia'
-                      : 'Manutenção'}
-                  )
+                  Meta da Dieta ({GOAL_MAPPED_NAME[questionnaire.goal]})
                 </div>
                 <div className="text-2xl font-black text-slate-950 dark:text-white mt-1">
                   {diet.calories} kcal
@@ -161,7 +156,7 @@ export function DietResult({ diet, questionnaire, onReset }: DietResultProps) {
             </div>
           </div>
           <div className="bg-slate-50 dark:bg-slate-950 p-6 rounded-2xl border border-slate-100 dark:border-border-dark text-center">
-            <div className="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider text-primary">
+            <div className="text-xs dark:text-slate-400 font-bold uppercase tracking-wider text-primary">
               Proteínas
             </div>
             <div className="text-3xl font-black text-slate-900 dark:text-white mt-1">
@@ -169,7 +164,7 @@ export function DietResult({ diet, questionnaire, onReset }: DietResultProps) {
             </div>
           </div>
           <div className="bg-slate-50 dark:bg-slate-950 p-6 rounded-2xl border border-slate-100 dark:border-border-dark text-center">
-            <div className="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider text-secondary">
+            <div className="text-xs dark:text-slate-400 font-bold uppercase tracking-wider text-secondary">
               Carboidratos
             </div>
             <div className="text-3xl font-black text-slate-900 dark:text-white mt-1">
@@ -177,7 +172,7 @@ export function DietResult({ diet, questionnaire, onReset }: DietResultProps) {
             </div>
           </div>
           <div className="bg-slate-50 dark:bg-slate-950 p-6 rounded-2xl border border-slate-100 dark:border-border-dark text-center">
-            <div className="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider text-accent">
+            <div className="text-xs dark:text-slate-400 font-bold uppercase tracking-wider text-accent">
               Gorduras
             </div>
             <div className="text-3xl font-black text-slate-900 dark:text-white mt-1">
@@ -189,12 +184,12 @@ export function DietResult({ diet, questionnaire, onReset }: DietResultProps) {
         <div className="space-y-6">
           <h3 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
             <span className="h-5 w-1 bg-primary rounded-full" />
-            Cronograma de Refeições
+            <span>Cronograma de Refeições</span>
           </h3>
           <div className="relative border-l border-slate-100 dark:border-border-dark ml-3 pl-6 space-y-8">
             {diet.meals.map((meal, idx) => (
-              <div key={idx} className="relative">
-                <span className="absolute -left-[31px] top-1.5 flex h-4.5 w-4.5 rounded-full border-4 border-white dark:border-card-dark bg-primary" />
+              <div key={`${meal.name}-${idx}`} className="relative">
+                <span className="absolute -left-7.75 top-1.5 flex h-4.5 w-4.5 rounded-full border-4 border-white dark:border-card-dark bg-primary" />
                 <div className="bg-slate-50/50 dark:bg-slate-950/30 p-5 rounded-2xl border border-slate-100 dark:border-border-dark/60">
                   <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-3">
                     <h4 className="font-bold text-slate-900 dark:text-white text-base">
@@ -205,8 +200,11 @@ export function DietResult({ diet, questionnaire, onReset }: DietResultProps) {
                     </span>
                   </div>
                   <ul className="space-y-1.5 text-sm text-slate-700 dark:text-slate-200">
-                    {meal.foods.map((food, fIdx) => (
-                      <li key={fIdx} className="flex items-center gap-2">
+                    {meal.foods.map((food, fidx) => (
+                      <li
+                        key={`${meal.name}-${fidx}`}
+                        className="flex items-center gap-2"
+                      >
                         <span className="h-1.5 w-1.5 rounded-full bg-slate-300 dark:bg-slate-600 shrink-0" />
                         {food}
                       </li>
@@ -222,7 +220,7 @@ export function DietResult({ diet, questionnaire, onReset }: DietResultProps) {
           <div className="space-y-4">
             <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
               <span className="h-5 w-1 bg-secondary rounded-full" />
-              Metas de Hidratação
+              <span>Metas de Hidratação</span>
             </h3>
             <div className="bg-slate-50 dark:bg-slate-950 p-5 rounded-2xl border border-slate-100 dark:border-border-dark flex items-center gap-4">
               <div className="p-3 rounded-xl bg-secondary/10 text-secondary">
@@ -254,11 +252,14 @@ export function DietResult({ diet, questionnaire, onReset }: DietResultProps) {
           <div className="space-y-4">
             <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
               <span className="h-5 w-1 bg-accent rounded-full" />
-              Recomendações Extras
+              <span>Recomendações Extras</span>
             </h3>
             <ul className="space-y-2 text-sm text-slate-700 dark:text-slate-200">
               {diet.recommendations.map((recommendation, idx) => (
-                <li key={idx} className="flex items-start gap-2">
+                <li
+                  key={`${recommendation}-${idx}`}
+                  className="flex items-start gap-2"
+                >
                   <span className="p-0.5 rounded-full bg-accent/15 text-accent shrink-0 mt-0.5">
                     <svg
                       className="h-3 w-3"

@@ -1,13 +1,13 @@
 'use client'
 
 interface HeroProps {
-  onStart: () => void
+  readonly onStart: () => void
 }
 
 export function Hero({ onStart }: HeroProps) {
   return (
     <section className="relative overflow-hidden py-20 px-4 text-center sm:py-32 bg-radial from-primary/10 via-transparent to-transparent">
-      <div className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px]" />
+      <div className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-size-[14px_24px]" />
       <div className="mx-auto max-w-4xl flex flex-col items-center">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary/20 bg-primary/5 text-primary text-xs font-semibold mb-6 hover:bg-primary/10 transition-all duration-300">
           <span className="flex h-2 w-2 rounded-full bg-accent animate-pulse" />{' '}
@@ -15,7 +15,7 @@ export function Hero({ onStart }: HeroProps) {
         </div>
         <h1 className="text-4xl font-extrabold tracking-tight sm:text-6xl text-slate-900 dark:text-white max-w-3xl leading-tight">
           Sua Dieta de Precisão Gerada por{' '}
-          <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+          <span className="bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent">
             Inteligência Artificial
           </span>
         </h1>
@@ -27,7 +27,7 @@ export function Hero({ onStart }: HeroProps) {
         <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center w-full sm:w-auto">
           <button
             onClick={onStart}
-            className="px-8 py-4 bg-gradient-to-r from-primary to-primary-dark hover:from-primary hover:to-secondary text-white font-bold rounded-xl shadow-lg hover:shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 cursor-pointer"
+            className="px-8 py-4 bg-linear-to-r from-primary to-primary-dark hover:from-primary hover:to-secondary text-white font-bold rounded-xl shadow-lg hover:shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 cursor-pointer"
           >
             Começar Minha Dieta Grátis
           </button>
