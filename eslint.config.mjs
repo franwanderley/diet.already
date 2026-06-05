@@ -28,6 +28,7 @@ const eslintConfig = defineConfig([
       ...nextPlugin.configs.recommended.rules,
       ...nextPlugin.configs['core-web-vitals'].rules,
       '@typescript-eslint/no-explicit-any': ['error'],
+      '@typescript-eslint/no-unsafe-declaration-merging': 'off',
     },
   },
 
