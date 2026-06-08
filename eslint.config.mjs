@@ -1,6 +1,7 @@
 import { defineConfig } from 'eslint/config'
 import nextPlugin from '@next/eslint-plugin-next'
 import eslintNextConfig from '@rocketseat/eslint-config/next.js'
+import reactPlugin from 'eslint-plugin-react'
 import { FlatCompat } from '@eslint/eslintrc'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
@@ -23,12 +24,14 @@ const eslintConfig = defineConfig([
   {
     plugins: {
       '@next/next': nextPlugin,
+      react: reactPlugin,
     },
     rules: {
       ...nextPlugin.configs.recommended.rules,
       ...nextPlugin.configs['core-web-vitals'].rules,
       '@typescript-eslint/no-explicit-any': ['error'],
       '@typescript-eslint/no-unsafe-declaration-merging': 'off',
+      'react/prefer-read-only-props': 'error',
     },
   },
 

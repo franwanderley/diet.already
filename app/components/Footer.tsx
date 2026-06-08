@@ -1,8 +1,8 @@
 'use client'
 
 interface FooterProps {
-  onCtaClick: () => void
-  showCta: boolean
+  readonly onCtaClick: () => void
+  readonly showCta: boolean
 }
 
 export function Footer({ onCtaClick, showCta }: FooterProps) {
@@ -21,7 +21,7 @@ export function Footer({ onCtaClick, showCta }: FooterProps) {
             </p>
             <button
               onClick={onCtaClick}
-              className="px-8 py-4 bg-gradient-to-r from-primary to-primary-dark hover:from-primary hover:to-secondary text-white font-bold rounded-xl shadow-lg hover:shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 cursor-pointer"
+              className="px-8 py-4 bg-linear-to-r from-primary to-primary-dark hover:from-primary hover:to-secondary text-white font-bold rounded-xl shadow-lg hover:shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 cursor-pointer"
             >
               Criar Minha Dieta Personalizada
             </button>

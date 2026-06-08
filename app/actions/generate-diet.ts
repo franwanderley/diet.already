@@ -3,6 +3,19 @@
 import { QuestionnaireData, DietPlan } from '../types'
 import { calculateDietMetrics } from '../utils/calculations'
 
+const GOAL_MAPPING = {
+  lose: 'perda de peso (déficit calórico)',
+  gain: 'ganho de peso/massa muscular (superávit calórico)',
+  maintain: 'manutenção de peso saudável (balanço calórico neutro)',
+}
+
+const ACTIVITY_LEVEL_MAPPING = {
+  sedentary: 'sedentário (pouco ou nenhum exercício)',
+  lightly_active: 'levemente ativo (exercício leve 1-3 dias/semana)',
+  moderately_active: 'moderadamente ativo (exercício moderado 3-5 dias/semana)',
+  very_active: 'muito ativo (exercício intenso 6-7 dias/semana)',
+}
+
 export async function generateDiet(data: QuestionnaireData): Promise<DietPlan> {
   const apiKey = process.env.GEMINI_API_KEY
   if (!apiKey) {
@@ -11,21 +24,9 @@ export async function generateDiet(data: QuestionnaireData): Promise<DietPlan> {
 
   const metrics = calculateDietMetrics(data)
 
-  const goalText =
-    data.goal === 'lose'
-      ? 'perda de peso (déficit calórico)'
-      : data.goal === 'gain'
-        ? 'ganho de peso/massa muscular (superávit calórico)'
-        : 'manutenção de peso saudável (balanço calórico neutro)'
+  const goalText = GOAL_MAPPING[data.goal]
 
-  const activityText =
-    data.activityLevel === 'sedentary'
-      ? 'sedentário (pouco ou nenhum exercício)'
-      : data.activityLevel === 'lightly_active'
-        ? 'levemente ativo (exercício leve 1-3 dias/semana)'
-        : data.activityLevel === 'moderately_active'
-          ? 'moderadamente ativo (exercício moderado 3-5 dias/semana)'
-          : 'muito ativo (exercício intenso 6-7 dias/semana)'
+  const activityText = ACTIVITY_LEVEL_MAPPING[data.activityLevel]
 
   const restrictionsText =
     data.restrictions.length > 0
