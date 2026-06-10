@@ -21,11 +21,12 @@ export function Questionnaire({ onSuccess }: QuestionnaireProps) {
     height: 170,
     activityLevel: 'moderately_active',
     restrictions: [],
+    nonNegotiable: '',
   })
 
   const [errors, setErrors] = useState<Record<string, string>>({})
 
-  const totalSteps = 5
+  const totalSteps = 6
 
   const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -525,6 +526,41 @@ export function Questionnaire({ onSuccess }: QuestionnaireProps) {
               </div>
             )}
 
+            {step === 6 && (
+              <div className="space-y-6">
+                <div>
+                  <h3 className="text-2xl font-bold text-slate-900 dark:text-white">
+                    Do que você não abre mão?
+                  </h3>
+                  <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
+                    Existe algum alimento ou bebida que você não larga de mão de
+                    jeito nenhum? (opcional)
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  <label
+                    htmlFor="nonNegotiable"
+                    className="text-sm font-bold text-slate-800 dark:text-slate-200"
+                  >
+                    Item não negociável
+                  </label>
+                  <input
+                    type="text"
+                    name="nonNegotiable"
+                    id="nonNegotiable"
+                    value={formData.nonNegotiable}
+                    onChange={handleTextChange}
+                    placeholder="Ex: café com açúcar, chocolate após o almoço, cerveja no fim de semana"
+                    className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-border-dark bg-slate-50 dark:bg-slate-950 focus:bg-white dark:focus:bg-black focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all duration-300 text-slate-900 dark:text-white"
+                  />
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                    A IA tentará adequar isso no seu plano alimentar (se
+                    possível) e trará recomendações ou críticas sobre esse item.
+                  </p>
+                </div>
+              </div>
+            )}
+
             <div className="mt-8 pt-6 border-t border-slate-100 dark:border-border-dark flex justify-between gap-4">
               {step > 1 ? (
                 <button
@@ -540,6 +576,7 @@ export function Questionnaire({ onSuccess }: QuestionnaireProps) {
 
               {step < totalSteps ? (
                 <button
+                  key="btn-next"
                   type="button"
                   onClick={nextStep}
                   className="px-8 py-3 bg-primary hover:bg-primary-dark text-white font-bold rounded-xl shadow-md hover:shadow-primary/10 transition-all duration-300 cursor-pointer"
@@ -548,6 +585,7 @@ export function Questionnaire({ onSuccess }: QuestionnaireProps) {
                 </button>
               ) : (
                 <button
+                  key="btn-submit"
                   type="submit"
                   className="px-8 py-3 bg-linear-to-r from-primary to-secondary text-white font-bold rounded-xl shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 cursor-pointer"
                 >

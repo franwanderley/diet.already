@@ -11,6 +11,7 @@ export interface QuestionnaireData {
     | 'moderately_active'
     | 'very_active'
   restrictions: string[]
+  nonNegotiable: string
 }
 
 export interface Meal {

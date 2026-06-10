@@ -33,6 +33,8 @@ export async function generateDiet(data: QuestionnaireData): Promise<DietPlan> {
       ? data.restrictions.join(', ')
       : 'nenhuma restrição alimentar'
 
+  const nonNegotiableText = data.nonNegotiable || 'nenhum'
+
   const prompt = `Você é um nutricionista profissional renomado. Crie uma dieta personalizada em português baseado nestes dados do cliente:
 - Nome: ${data.name}
 - Gênero: ${data.gender === 'male' ? 'Masculino' : 'Feminino'}
@@ -42,6 +44,7 @@ export async function generateDiet(data: QuestionnaireData): Promise<DietPlan> {
 - Altura: ${data.height} cm
 - Nível de atividade física: ${activityText}
 - Restrições alimentares: ${restrictionsText}
+- Alimento/bebida que não abre mão de jeito nenhum: ${nonNegotiableText}
 
 Métricas Energéticas Calculadas (use estes valores exatos como base):
 - Taxa Metabólica Basal (TMB): ${metrics.tmb} kcal
@@ -55,8 +58,9 @@ Distribuição Recomendada de Macronutrientes (use estes valores exatos como bas
 
 Instruções importantes:
 1. Monte o plano alimentar detalhado de refeições diárias (incluindo horários ideais sugeridos e alimentos) guiando-se pela Meta Calórica Diária de ${metrics.calories} kcal e pelos macros recomendados acima. (Atenção: você NÃO precisa ser matematicamente rigoroso com os alimentos nas refeições para atingir exatamente esses valores).
-2. Forneça recomendações de hidratação corretas baseadas no peso do cliente e suplementação se relevante.
-3. No JSON retornado, preencha o campo 'calories' exatamente com o valor ${metrics.calories}, e o objeto 'macros' com exatamente os valores de proteína: ${metrics.protein}, carboidratos: ${metrics.carbs} e gorduras: ${metrics.fat}.`
+2. Se o cliente especificou um alimento ou bebida que não abre mão (diferente de "nenhum"), tente encaixá-lo de forma moderada e controlada na dieta (se viável), e obrigatoriamente inclua uma recomendação ou crítica construtiva/orientação nutricional no array de 'recommendations' detalhando o impacto dele na saúde/dieta e como consumi-lo corretamente.
+3. Forneça recomendações de hidratação corretas baseadas no peso do cliente e suplementação se relevante.
+4. No JSON retornado, preencha o campo 'calories' exatamente com o valor ${metrics.calories}, e o objeto 'macros' com exatamente os valores de proteína: ${metrics.protein}, carboidratos: ${metrics.carbs} e gorduras: ${metrics.fat}.`
 
   const response = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
