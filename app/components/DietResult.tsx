@@ -1,6 +1,7 @@
 'use client'
 
-import { DietPlan, QuestionnaireData } from '../types'
+import { useState } from 'react'
+import { DietPlan, QuestionnaireData, FoodItem } from '../types'
 
 interface DietResultProps {
   readonly diet: DietPlan
@@ -15,6 +16,10 @@ const GOAL_MAPPED_NAME = {
 }
 
 export function DietResult({ diet, questionnaire, onReset }: DietResultProps) {
+  const [selections, setSelections] = useState<
+    Record<string, { name: string; amount: string }>
+  >({})
+
   const handlePrint = () => {
     globalThis.print()
   }
@@ -135,11 +140,12 @@ export function DietResult({ diet, questionnaire, onReset }: DietResultProps) {
                   {diet.calories} kcal
                 </div>
                 <div className="text-[10px] text-slate-500 dark:text-slate-400 mt-1">
-                  {questionnaire.goal === 'lose'
-                    ? 'Déficit calórico (-400 kcal)'
-                    : questionnaire.goal === 'gain'
-                      ? 'Superávit calórico (+400 kcal)'
-                      : 'Balanço calórico neutro'}
+                  {questionnaire.goal === 'lose' &&
+                    'Déficit calórico (-400 kcal)'}
+                  {questionnaire.goal === 'gain' &&
+                    'Superávit calórico (+400 kcal)'}
+                  {questionnaire.goal === 'maintain' &&
+                    'Balanço calórico neutro'}
                 </div>
               </div>
             </div>
@@ -199,16 +205,106 @@ export function DietResult({ diet, questionnaire, onReset }: DietResultProps) {
                       Horário Sugerido: {meal.time}
                     </span>
                   </div>
-                  <ul className="space-y-1.5 text-sm text-slate-700 dark:text-slate-200">
-                    {meal.foods.map((food, fidx) => (
-                      <li
-                        key={`${meal.name}-${fidx}`}
-                        className="flex items-center gap-2"
-                      >
-                        <span className="h-1.5 w-1.5 rounded-full bg-slate-300 dark:bg-slate-600 shrink-0" />
-                        {food}
-                      </li>
-                    ))}
+                  <ul className="divide-y divide-slate-100/50 dark:divide-border-dark/30 text-sm text-slate-700 dark:text-slate-200">
+                    {meal.foods.map((foodItem, fidx) => {
+                      const food = foodItem as unknown as string | FoodItem
+                      const isString = typeof food === 'string'
+                      const originalName = isString ? food : food.name
+                      const originalAmount = isString ? '' : food.amount
+                      const alternatives = isString
+                        ? []
+                        : food.alternatives || []
+                      const selectionKey = `${idx}-${fidx}`
+                      const currentFood = selections[selectionKey] || {
+                        name: originalName,
+                        amount: originalAmount,
+                      }
+                      const hasAlternatives = alternatives.length > 0
+
+                      return (
+                        <li
+                          key={`${meal.name}-${fidx}`}
+                          className="py-3 first:pt-0 last:pb-0 flex flex-col gap-2"
+                        >
+                          <div className="flex items-start gap-2">
+                            <span className="h-1.5 w-1.5 rounded-full bg-primary shrink-0 mt-1.75" />
+                            <div className="flex flex-wrap items-center gap-x-2">
+                              <span className="font-semibold text-slate-900 dark:text-white">
+                                {currentFood.name}
+                              </span>
+                              {currentFood.amount && (
+                                <span className="text-xs text-primary font-bold bg-primary/10 dark:bg-primary/5 px-2 py-0.5 rounded-md">
+                                  {currentFood.amount}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+
+                          {hasAlternatives && (
+                            <div className="pl-3.5 flex flex-wrap items-center gap-1.5 mt-1 select-none print:hidden">
+                              <span className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">
+                                Opções:
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const updated = { ...selections }
+                                  delete updated[selectionKey]
+                                  setSelections(updated)
+                                }}
+                                className={`px-2 py-1 rounded-lg text-xs font-bold transition-all duration-200 cursor-pointer ${
+                                  currentFood.name === originalName
+                                    ? 'bg-primary text-white shadow-xs'
+                                    : 'bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800'
+                                }`}
+                              >
+                                {originalName}
+                              </button>
+                              {alternatives.map((alt, altIdx) => (
+                                <button
+                                  type="button"
+                                  key={`${alt.name}-${altIdx}`}
+                                  onClick={() => {
+                                    setSelections((prev) => ({
+                                      ...prev,
+                                      [selectionKey]: {
+                                        name: alt.name,
+                                        amount: alt.amount,
+                                      },
+                                    }))
+                                  }}
+                                  className={`px-2 py-1 rounded-lg text-xs font-bold transition-all duration-200 cursor-pointer ${
+                                    currentFood.name === alt.name
+                                      ? 'bg-primary text-white shadow-xs'
+                                      : 'bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800'
+                                  }`}
+                                >
+                                  {alt.name}
+                                </button>
+                              ))}
+                            </div>
+                          )}
+
+                          {hasAlternatives && (
+                            <div className="hidden print:block pl-3.5 text-[10px] text-slate-400 italic">
+                              Opções:{' '}
+                              {[
+                                originalName === currentFood.name
+                                  ? null
+                                  : `${originalName} (${originalAmount})`,
+                                ...alternatives
+                                  .filter(
+                                    (alt) => alt.name !== currentFood.name,
+                                  )
+                                  .map((alt) => `${alt.name} (${alt.amount})`),
+                              ]
+                                .filter(Boolean)
+                                .join(', ')}
+                            </div>
+                          )}
+                        </li>
+                      )
+                    })}
                   </ul>
                 </div>
               </div>

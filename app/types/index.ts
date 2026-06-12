@@ -14,10 +14,16 @@ export interface QuestionnaireData {
   nonNegotiable: string
 }
 
+export interface FoodItem {
+  name: string
+  amount: string
+  alternatives?: { name: string; amount: string }[]
+}
+
 export interface Meal {
   name: string
   time: string
-  foods: string[]
+  foods: FoodItem[]
 }
 
 export interface DietPlan {

@@ -60,7 +60,8 @@ Instruções importantes:
 1. Monte o plano alimentar detalhado de refeições diárias (incluindo horários ideais sugeridos e alimentos) guiando-se pela Meta Calórica Diária de ${metrics.calories} kcal e pelos macros recomendados acima. (Atenção: você NÃO precisa ser matematicamente rigoroso com os alimentos nas refeições para atingir exatamente esses valores).
 2. Se o cliente especificou um alimento ou bebida que não abre mão (diferente de "nenhum"), tente encaixá-lo de forma moderada e controlada na dieta (se viável), e obrigatoriamente inclua uma recomendação ou crítica construtiva/orientação nutricional no array de 'recommendations' detalhando o impacto dele na saúde/dieta e como consumi-lo corretamente.
 3. Forneça recomendações de hidratação corretas baseadas no peso do cliente e suplementação se relevante.
-4. No JSON retornado, preencha o campo 'calories' exatamente com o valor ${metrics.calories}, e o objeto 'macros' com exatamente os valores de proteína: ${metrics.protein}, carboidratos: ${metrics.carbs} e gorduras: ${metrics.fat}.`
+4. Cada item alimentar na lista de refeições ('foods') deve ser um objeto contendo 'name' (o nome do alimento) e 'amount' (quantidade ou porção, ex: '150g', '2 fatias', '1 colher de sopa'). Além disso, forneça obrigatoriamente uma lista 'alternatives' de 2 a 3 opções saudáveis equivalentes para substituição (por exemplo, se o alimento for 'Arroz integral', as alternativas podem ser 'Batata doce cozida' com a respectiva quantidade ou 'Mandioca cozida', mantendo equivalência nutricional aproximada).
+5. No JSON retornado, preencha o campo 'calories' exatamente com o valor ${metrics.calories}, e o objeto 'macros' com exatamente os valores de proteína: ${metrics.protein}, carboidratos: ${metrics.carbs} e gorduras: ${metrics.fat}.`
 
   const response = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
@@ -103,7 +104,25 @@ Instruções importantes:
                     time: { type: 'STRING' },
                     foods: {
                       type: 'ARRAY',
-                      items: { type: 'STRING' },
+                      items: {
+                        type: 'OBJECT',
+                        properties: {
+                          name: { type: 'STRING' },
+                          amount: { type: 'STRING' },
+                          alternatives: {
+                            type: 'ARRAY',
+                            items: {
+                              type: 'OBJECT',
+                              properties: {
+                                name: { type: 'STRING' },
+                                amount: { type: 'STRING' },
+                              },
+                              required: ['name', 'amount'],
+                            },
+                          },
+                        },
+                        required: ['name', 'amount'],
+                      },
                     },
                   },
                   required: ['name', 'time', 'foods'],
